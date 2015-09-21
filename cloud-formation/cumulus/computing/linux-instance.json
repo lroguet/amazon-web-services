@@ -1,0 +1,108 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Stack :: Linux instance",
+  "Parameters": {
+    "KeyName": {
+      "Description": "The name of the key pair",
+      "Type": "String"
+    },
+    "Subnet": {
+      "Description": "The subnet to launch the instance in",
+      "Type": "String"
+    },
+    "SecurityGroup": {
+      "Description": "The security group assigned to the instance",
+      "Type": "String"
+    }
+  },
+  "Mappings": {
+    "AWSRegionToAMI": {
+      "us-east-1": {
+        "AMI": "ami-146e2a7c"
+      },
+      "us-west-2": {
+        "AMI": "ami-dfc39aef"
+      },
+      "us-west-1": {
+        "AMI": "ami-42908907"
+      },
+      "eu-west-1": {
+        "AMI": "ami-9d23aeea"
+      },
+      "eu-central-1": {
+        "AMI": "ami-04003319"
+      },
+      "ap-southeast-1": {
+        "AMI": "ami-96bb90c4"
+      },
+      "ap-northeast-1": {
+        "AMI": "ami-18869819"
+      },
+      "ap-southeast-2": {
+        "AMI": "ami-d50773ef"
+      },
+      "sa-east-1": {
+        "AMI": "ami-af9925b2"
+      },
+      "cn-north-1": {
+        "AMI": "ami-981d8fa1"
+      },
+      "undefined": {
+        "AMI": "ami-933253b0"
+      }
+    }
+  },
+  "Resources": {
+    "Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": {
+          "Fn::FindInMap": [
+            "AWSRegionToAMI",
+            {
+              "Ref": "AWS::Region"
+            },
+            "AMI"
+          ]
+        },
+        "InstanceType": "t2.micro",
+        "KeyName": {
+          "Ref": "KeyName"
+        },
+        "NetworkInterfaces": [
+          {
+            "AssociatePublicIpAddress": "True",
+            "DeleteOnTermination": "True",
+            "SubnetId": {
+              "Ref": "Subnet"
+            },
+            "DeviceIndex": "0",
+            "GroupSet": [
+              {
+                "Ref": "SecurityGroup"
+              }
+            ]
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Amazon Linux Instance"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -x\n",
+                "exec &> /home/ec2-user/userdata.log\n",
+                "\n"
+              ]
+            ]
+          }
+        }
+      }
+    }
+  }
+}

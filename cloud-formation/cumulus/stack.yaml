@@ -1,0 +1,62 @@
+cumulus:
+    # HOW-TO
+        # Create: cumulus -y xxx.yaml -a create
+        # Update: cumulus -y xxx.yaml -a update
+        # Delete: cumulus -y xxx.yaml -a delete
+    region: eu-west-1
+    # Turn on colour cloudformation event status output
+    highlight-output: true
+    tags:
+        Stack: architecting-on-aws
+        CostCenter: infrastructure-as-code
+    stacks:
+        # Create a VPC
+        vpc:
+            cf_template: networking/vpc.json
+            depends:
+            params:
+                VpcCidrBlock:
+                    value: 10.1.0.0/16
+        # Create a VPC
+        public-subnet:
+            cf_template: networking/public-subnet.json
+            depends:
+                - vpc
+            params:
+                VPC:
+                    source: vpc
+                    type: resource
+                    variable: VPC
+                SubnetCidrBlock:
+                    value: 10.1.1.0/24
+                RouteTable:
+                    source: vpc
+                    type: resource
+                    variable: PublicRouteTable         
+        # Create security groups
+        security-groups:
+            cf_template: computing/security-groups.json
+            depends:
+                - vpc
+            params:
+                VPC:
+                    source: vpc
+                    type: resource
+                    variable: VPC
+        # Create an Amazon Linux instance in the public subnet
+        linux-instance:
+            cf_template: computing/linux-instance.json
+            depends:
+                - public-subnet
+                - security-groups
+            params:
+                KeyName:
+                    value: CumulusKeyPair
+                Subnet:
+                    source: public-subnet
+                    type: resource
+                    variable: Subnet
+                SecurityGroup:
+                    source: security-groups
+                    type: resource
+                    variable: SSHSecurityGroup
