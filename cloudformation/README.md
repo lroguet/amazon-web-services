@@ -1,0 +1,6 @@
+# Amazon Web Services
+## CloudFormation with Cumulus
+A simple example to demonstrate how to create a CloudFormation stack with [Cumulus](https://github.com/cotdsa/cumulus). The stack consists of a VPC, a public subnet and a Linux instance that can be accessed via SSH. 
+
+## Contributors
+Ludovic Roguet <code@fourteenislands.io>
