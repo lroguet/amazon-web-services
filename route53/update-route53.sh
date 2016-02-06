@@ -1,11 +1,12 @@
 #!/bin/bash
 # Inspired by https://willwarren.com/2014/07/03/roll-dynamic-dns-service-using-amazon-route53/
 
-ZONEID="ZJ4Q3522DEV3E"
-RECORDSET="pi.fourteenislands.io"
-TYPE="A"
+ZONE_ID="ROUTE53_ZONE_ID"
+RECORD_SET_NAME="pi.example.com"
+RECORD_SET_TYPETYPE="A"
 TTL=300
 
+LOGS="/PATH/TO/LOG/FILES"
 COMMENT="Auto updating @ `date`"
 
 # Get current public IP
@@ -28,9 +29,8 @@ function valid_ip()
     return $stat
 }
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-LOGFILE="$DIR/update-route53.log"
-IPFILE="$DIR/update-route53.ip"
+LOGFILE="$LOGS/update-route53.log"
+IPFILE="$LOGS/update-route53.ip"
 
 # Log `date`
 echo ">>------> `date`" >> "$LOGFILE"
@@ -66,8 +66,8 @@ else
                 "Value":"$IP"
               }
             ],
-            "Name":"$RECORDSET",
-            "Type":"$TYPE",
+            "Name":"$RECORD_SET_NAME",
+            "Type":"$RECORD_SET_TYPE",
             "TTL":$TTL
           }
         }
@@ -77,7 +77,7 @@ EOF
 
     # Update the Hosted Zone record
     aws route53 change-resource-record-sets \
-        --hosted-zone-id $ZONEID \
+        --hosted-zone-id $ZONE_ID \
         --change-batch file://"$TMPFILE" >> "$LOGFILE"
     echo "" >> "$LOGFILE"
 
