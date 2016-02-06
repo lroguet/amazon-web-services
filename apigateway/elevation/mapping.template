@@ -1,0 +1,10 @@
+#set($inputRoot = $input.path('$'))
+{
+    "metadata": {
+        "key": "$stageVariables.key"
+    },
+    "data": {
+      "position": "$input.params('position')",
+      "unit": "$input.params('unit')"
+    }
+}
