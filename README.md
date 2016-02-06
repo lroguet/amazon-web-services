@@ -1,5 +1,7 @@
 # Amazon Web Services
-## CloudFormation
-## Route53
-## Contributors
+### API Gateway
+### CloudFormation
+### Lambda
+### Route53
+### Contributors
 Ludovic Roguet <code@fourteenislands.io>
