@@ -25,14 +25,6 @@
       "PrivateSubnetTwo": {
         "CIDR": "10.0.4.0/24"
       }
-    },
-    "AmazonMachineImages": {
-      "eu-west-1": {
-        "AmazonLinux": "ami-69b9941e"
-      },
-      "us-east-1": {
-        "AmazonLinux": "ami-e3106686"
-      }
     }
   },
   "Resources": {
