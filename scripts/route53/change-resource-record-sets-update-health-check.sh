@@ -1,10 +1,10 @@
 #!/bin/bash
-# Inspired by https://willwarren.com/2014/07/03/roll-dynamic-dns-service-using-amazon-route53/
 
-ZONE_ID="ROUTE53_ZONE_ID"
+HEALTH_CHECK_ID="ROUTE53_HEALTH_CHECK_ID"
 RECORD_SET_NAME="pi.example.com"
 RECORD_SET_TYPETYPE="A"
-TTL=300
+TTL=60
+ZONE_ID="ROUTE53_ZONE_ID"
 
 LOGS="/PATH/TO/LOG/FILES"
 COMMENT="Auto updating @ `date`"
@@ -68,12 +68,16 @@ else
             ],
             "Name":"$RECORD_SET_NAME",
             "Type":"$RECORD_SET_TYPE",
-            "TTL":$TTL
+            "TTL": $TTL,
+            "Failover": "PRIMARY",
+            "SetIdentifier": "lab-one",
+            "HealthCheckId": "$HEALTH_CHECK_ID"
           }
         }
       ]
     }
-EOF
+    EOF
+
 
     # Update the Hosted Zone record
     aws route53 change-resource-record-sets \
@@ -81,10 +85,14 @@ EOF
         --change-batch file://"$TMPFILE" >> "$LOGFILE"
     echo "" >> "$LOGFILE"
 
+    # Update health check
+    aws route53 update-health-check \
+      --health-check-id $HEALTH_CHECK_ID \
+      --ip-address $IP
+
     # Clean up
     rm $TMPFILE
 fi
 
 # All Done - cache the IP address for next time
 echo "$IP" > "$IPFILE"
-
