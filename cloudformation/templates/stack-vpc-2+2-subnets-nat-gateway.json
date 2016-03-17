@@ -1,13 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "VPC with public and private subnets (2 AZs) & NAT",
-  "Parameters": {
-    "KeyPairName": {
-      "Description": "The key pair name to connect to the instances",
-      "Type": "String",
-      "Default": "CloudFormationKeyPair"
-    }
-  },
   "Mappings": {
     "Networking": {
       "VPC": {
