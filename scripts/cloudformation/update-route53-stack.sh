@@ -4,7 +4,7 @@
 PRIMARY_RECORD_IP_ADDRESS="MY_IP_ADDRESS"
 STACK_NAME_OR_ID="MY_STACK"
 
-aws cloudformation update-stack --stack-name $MY_STACK \
+aws cloudformation update-stack --stack-name $STACK_NAME_OR_ID \
   --use-previous-template \
   --parameters \
     ParameterKey=PrimaryRecord,ParameterValue=$PRIMARY_RECORD_IP_ADDRESS \
