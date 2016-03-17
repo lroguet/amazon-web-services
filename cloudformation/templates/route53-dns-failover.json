@@ -1,0 +1,96 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "'A' record to 'Alias' record DNS failover.",
+  "Parameters": {
+    "PrimaryRecord": {
+      "Type": "String",
+      "Description": "The primary record. A standard 'A' record to an IP address."
+    },
+    "SecondaryRecord": {
+      "Type": "String",
+      "Description": "The secondary record (fallback). An alias 'A' record to a CloudFront distribution."
+    },
+    "DomainName": {
+      "Type": "String",
+      "Default": "example.com"
+    },
+    "HealthCheckPath": {
+      "Type": "String",
+      "Default": "/index.html"
+    },
+    "HostedZoneId": {
+      "Type": "String",
+      "Description": "The Route53 HostedZoneId to create these records in."
+    }
+  },
+  "Resources": {
+    "HealthCheck": {
+      "Type": "AWS::Route53::HealthCheck",
+      "Properties": {
+        "HealthCheckConfig": {
+          "FailureThreshold": 3,
+          "IPAddress": {
+            "Ref": "PrimaryRecord"
+          },
+          "Port": 80,
+          "RequestInterval": 30,
+          "ResourcePath": {
+            "Ref": "HealthCheckPath"
+          },
+          "Type": "HTTP"
+        },
+        "HealthCheckTags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Ref": "DomainName"
+            }
+          }
+        ]
+      }
+    },
+    "ThePrimaryRecord": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "Failover": "PRIMARY",
+        "HealthCheckId": {
+          "Ref": "HealthCheck"
+        },
+        "HostedZoneId": {
+          "Ref": "HostedZoneId"
+        },
+        "Name": {
+          "Ref": "DomainName"
+        },
+        "ResourceRecords": [
+          {
+            "Ref": "PrimaryRecord"
+          }
+        ],
+        "SetIdentifier": "primary-record",
+        "TTL": "60",
+        "Type": "A"
+      }
+    },
+    "TheSecondaryRecord": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "AliasTarget": {
+          "DNSName": {
+            "Ref": "SecondaryRecord"
+          },
+          "HostedZoneId": "Z2FDTNDATAQYW2"
+        },
+        "Failover": "SECONDARY",
+        "HostedZoneId": {
+          "Ref": "HostedZoneId"
+        },
+        "Name": {
+          "Ref": "DomainName"
+        },
+        "SetIdentifier": "secondary-record",
+        "Type": "A"
+      }
+    }
+  }
+}
