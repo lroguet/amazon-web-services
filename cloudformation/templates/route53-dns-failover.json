@@ -4,7 +4,8 @@
   "Parameters": {
     "PrimaryRecord": {
       "Type": "String",
-      "Description": "The primary record. A standard 'A' record to an IP address."
+      "Description": "The primary record. A standard 'A' record to an IP address.",
+      "Default": "1.2.3.4"
     },
     "SecondaryRecord": {
       "Type": "String",
@@ -12,10 +13,12 @@
     },
     "DomainName": {
       "Type": "String",
+      "Description": "The domain name.",
       "Default": "example.com"
     },
     "HealthCheckPath": {
       "Type": "String",
+      "Description": "The URL to perform the health check against.",
       "Default": "/index.html"
     },
     "HostedZoneId": {
