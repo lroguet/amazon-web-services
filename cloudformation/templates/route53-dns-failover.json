@@ -35,6 +35,9 @@
           "IPAddress": {
             "Ref": "PrimaryRecord"
           },
+          "FullyQualifiedDomainName": {
+            "Ref": "DomainName"
+          },
           "Port": 80,
           "RequestInterval": 30,
           "ResourcePath": {
