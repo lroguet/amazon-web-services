@@ -87,7 +87,7 @@
           ]
         },
         "SubnetId": {
-          "Ref": "PublicSubnetOne"
+          "Ref": "PublicSubnetTwo"
         }
       }
     },
